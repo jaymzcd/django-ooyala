@@ -65,7 +65,7 @@ class OoyalaItem(models.Model):
         ordering = ('-updated_at',)
 
 class UrlVideoLink(models.Model):
-    url = models.SlugField()
+    url = models.CharField(unique=True, max_length=255) # unique for now, a path like /news/item/10
     url.help_text = 'The url that this video should be connected to (assuming template supports video)'
     item = models.ForeignKey(OoyalaItem)
     item.help_text = 'The ooyala content that will be loaded on this page\'s video section'
