@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from django.utils.safestring import mark_safe
 from django.db import models
 
 class OoyalaItem(models.Model):
@@ -66,7 +67,8 @@ class OoyalaItem(models.Model):
 
 class UrlVideoLink(models.Model):
     url = models.CharField(unique=True, max_length=255) # unique for now, a path like /news/item/10
-    url.help_text = 'The url that this video should be connected to (assuming template supports video)'
+    url.help_text = mark_safe("""The url that this video should be connected to '(assuming template supports video). Eg <em>/news/item/</em>, use <strong>/</strong> for home.""")
+    url.allow_tags = True
     item = models.ForeignKey(OoyalaItem)
     item.help_text = 'The ooyala content that will be loaded on this page\'s video section'
 

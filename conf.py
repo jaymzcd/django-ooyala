@@ -39,3 +39,8 @@ OOYALA_PARAMS = {
         'DEFAULTS' : {},
     },
 }
+
+RENDER_SIZES = {
+    'regular': (335, 243),
+    'large': (665, 320),
+}

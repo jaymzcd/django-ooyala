@@ -11,5 +11,6 @@ class LinkAdmin(admin.ModelAdmin):
     search_fields = ('item__title', 'url')
     list_display = ('url', 'item')
 
+
 admin.site.register(OoyalaItem, OoyalaItemAdmin)
 admin.site.register(UrlVideoLink, LinkAdmin)
