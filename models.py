@@ -60,15 +60,23 @@ class OoyalaItem(models.Model):
             'height': int(get_data('height')),
             'thumbnail': get_data('thumbnail'),
             'stat': get_data('stat'),
+            'description': '',
         }
 
         try:
+            item_data.update(dict(description=get_data('description'))) # not everything has
+        except:
+            pass
+
+        try:
             ooyala_item = OoyalaItem.objects.get(embed_code=get_data('embedCode'))
+            ooyala_item.description = item_data['description']
+            #TODO: here attributes should update for that item
         except OoyalaItem.DoesNotExist:
-            ooyala_item = OoyalaItem(**item_data)
-            ooyala_item.save()
-            print "Saved item %s" % ooyala_item.embed_code
             created = True
+            ooyala_item = OoyalaItem(**item_data)
+
+        ooyala_item.save()
 
         if created:
             print "Created new item %s " % ooyala_item.embed_code

@@ -63,7 +63,6 @@ class OoyalaRequest(object):
         uri = OoyalaAPI.BASE_URL + self.action + '?pcode=' + \
             API_KEYS['PARTNER_CODE'] + '&' + urllib.urlencode(self.params()) + \
             '&signature=' + signature
-        print uri
         return uri
 
     def process(self):
