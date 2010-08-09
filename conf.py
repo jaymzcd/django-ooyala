@@ -42,5 +42,5 @@ OOYALA_PARAMS = {
 
 RENDER_SIZES = {
     'regular': (335, 243),
-    'large': (665, 320),
+    'large': (655, 320),
 }

@@ -8,3 +8,6 @@ def home(request):
         'video': video,
     }
     return render_to_response('landing-pages/video.html', context, context_instance=RequestContext(request))
+
+def channel(request):
+    return render_to_response('landing-pages/video.html', context, context_instance=RequestContext(request))

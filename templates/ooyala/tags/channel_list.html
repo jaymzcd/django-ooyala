@@ -1,0 +1,5 @@
+<ul class="ooyala-channel-list">
+{% for channel in channels %}
+    <li><a href="{{ channel.get_absolute_url }}" alt="View channel">{{ channel.title }}</a></li>
+{% endfor %}
+</ul>

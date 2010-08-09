@@ -23,6 +23,10 @@ class OoyalaItem(models.Model):
     def __unicode__(self):
         return '%s (%s [%s])' % (self.title, self.content_type, self.status)
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('video:channel', [self.pk,])
+
     @property
     def nice_length(self):
         length = timedelta(milliseconds=self.length)
