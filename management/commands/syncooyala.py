@@ -18,10 +18,10 @@ class Command(BaseCommand):
                 [ooyala_item, created] = OoyalaItem.from_xml(item)
                 if created:
                     count += 1
-                    sys.stdout.write('Added %s (%s)\n' % (ooyala_item.title, ooyala_item.content_type))
+                    sys.stdout.write('Added %s (%s)\n' % (str(ooyala_item.title), ooyala_item.content_type))
         else:
             sys.stdout.write('Problem getting the data from ooyala, retrying...\n')
-            handle(self, *args, **kwargs)
+            self.handle(self, *args, **kwargs)
 
         sys.stdout.write('\nCOMPLETE: All items imported - %d in total\n\n' % count)
 

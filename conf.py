@@ -14,8 +14,8 @@ else:
 # label[0..X] etc, for now we allow just 1 label search
 OOYALA_PARAMS = {
     OoyalaAPI.BACKLOT.QUERY : {
-        'PARAMS' : ['content_type', 'statistics', 'description', 'embed_code', 'fields', 'include_deleted', 'label'],
-        'REMAPS' : {'embed_code': 'embedCode', 'label': 'label[0]', 'content_type': 'contentType' },
+        'PARAMS' : ['content_type', 'statistics', 'description', 'embed_code', 'fields', 'include_deleted', 'label', 'limit', 'page_id'],
+        'REMAPS' : {'embed_code': 'embedCode', 'label': 'label[0]', 'content_type': 'contentType', 'page_id': 'pageID' },
         'DEFAULTS' : {},
     },
     OoyalaAPI.BACKLOT.THUMB : {

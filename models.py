@@ -45,6 +45,8 @@ class OoyalaItem(models.Model):
                 else:
                     return None
 
+        created = False
+
         item_data = {
             'embed_code': get_data('embedCode'),
             'title': get_data('title'),
@@ -60,7 +62,14 @@ class OoyalaItem(models.Model):
             'stat': get_data('stat'),
         }
 
-        [ooyala_item, created] = OoyalaItem.objects.get_or_create(**item_data)
+        try:
+            ooyala_item = OoyalaItem.objects.get(embed_code=get_data('embedCode'))
+        except OoyalaItem.DoesNotExist:
+            ooyala_item = OoyalaItem(**item_data)
+            ooyala_item.save()
+            print "Saved item %s" % ooyala_item.embed_code
+            created = True
+
         if created:
             print "Created new item %s " % ooyala_item.embed_code
 

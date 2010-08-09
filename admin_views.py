@@ -11,14 +11,12 @@ from ooyala.models import OoyalaItem
 
 @staff_member_required
 def backlot_query(request):
-    req = OoyalaQuery(content_type='video')
+    req = OoyalaQuery()
 
     ooyala_response = req.process()
     if type(ooyala_response)!=str:
         items = ooyala_response.getElementsByTagName('item')
-        for item in items:
-            OoyalaItem.from_xml(item)
-
+        return HttpResponse(ooyala_response.toprettyxml(), mimetype="text/xml")
     else:
         print "got an error back"
 

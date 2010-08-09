@@ -1,8 +1,8 @@
 <meta name="medium" content="video" />
-<meta name="title" content="Title of Video" />
-<meta name="description" content="Description of Video" />
-<link rel="image_src" href="http://ak.c.ooyala.com/BqYWpjMTqo2JxLQBntWVV38XyQyVO3c4/R9h3a3wTes9kt5iH5hMDoxOjA0O88asB" />
-<link rel="video_src" href="http://player.ooyala.com/player.swf?embedCode=BqYWpjMTqo2JxLQBntWVV38XyQyVO3c4&keepEmbedCode=true"/>
+<meta name="title" content="{{ video.title }}" />
+<meta name="description" content="{% if video.description %}{{ video.description }}{% else %}Watch this video{% endif %}" />
+<link rel="image_src" href="{{ video.thumbnail }}" />
+<link rel="video_src" href="http://player.ooyala.com/player.swf?embedCode={{ video.embed_code }}&keepEmbedCode=true"/>
 <meta name="video_height" content="236" />
 <meta name="video_width" content="420" />
 <meta name="video_type" content="application/x-shockwave-flash" />

@@ -63,6 +63,7 @@ class OoyalaRequest(object):
         uri = OoyalaAPI.BASE_URL + self.action + '?pcode=' + \
             API_KEYS['PARTNER_CODE'] + '&' + urllib.urlencode(self.params()) + \
             '&signature=' + signature
+        print uri
         return uri
 
     def process(self):
@@ -110,6 +111,7 @@ class OoyalaQuery(OoyalaRequest):
         self.title = kwargs.get('title', None)
         self.updated_after = kwargs.get('updated_after', None)
         self.order_by = kwargs.get('order_by', None)
+        self.limit = O.OOYALA_QUERY_LIMIT
 
         super(OoyalaQuery, self).__init__(OoyalaAPI.BACKLOT.QUERY)
 

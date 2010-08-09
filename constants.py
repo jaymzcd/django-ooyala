@@ -42,6 +42,9 @@ class OoyalaConstants(object):
     OOYALA_FIELDS_METADATA = 'metadata'
     OOYALA_FIELDS_RATINGS = 'ratings'
 
+    # Query API limit
+    OOYALA_QUERY_LIMIT = 1000 # default is 500 [Actually, this is a hard maximum]
+
     # Mode options for the Label Management API
     class LABEL_MODE(object):
         LIST = 'listLabels'
