@@ -2,6 +2,7 @@ import hashlib
 import urllib
 import base64
 import time
+import datetime
 import xml
 
 from ooyala.exceptions import OoyalaParameterException
@@ -20,10 +21,12 @@ class OoyalaRequest(object):
     expires = O.DEFAULT_EXPIRE_TIME
     processed = False
     response = None
+    api_url = None
 
-    def __init__(self, action, expires=None):
+    def __init__(self, action, api_url, expires=None):
         self.created = time.mktime(time.gmtime()) # time.time is giving me the wrong time!?
         self.action = action # set to the particular backlot api you want to use
+        self.api_url = api_url # differnt "top level" API's have different URI's
         if expires:
             self.expires = expires
 
@@ -60,7 +63,7 @@ class OoyalaRequest(object):
     def url(self):
         """ Returns the URL used to issue a request for data """
         signature = self.signature()
-        uri = OoyalaAPI.BASE_URL + self.action + '?pcode=' + \
+        uri = OoyalaAPI.BASE_URL + self.api_url + self.action + '?pcode=' + \
             API_KEYS['PARTNER_CODE'] + '&' + urllib.urlencode(self.params()) + \
             '&signature=' + signature
         return uri
@@ -112,7 +115,7 @@ class OoyalaQuery(OoyalaRequest):
         self.order_by = kwargs.get('order_by', None)
         self.limit = O.OOYALA_QUERY_LIMIT
 
-        super(OoyalaQuery, self).__init__(OoyalaAPI.BACKLOT.QUERY)
+        super(OoyalaQuery, self).__init__(OoyalaAPI.BACKLOT.QUERY, OoyalaAPI.BACKLOT.URL)
 
 class OoyalaThumbnail(OoyalaRequest):
     """ An Ooyala thumbnail lookup. The embed code must be provided
@@ -130,7 +133,7 @@ class OoyalaThumbnail(OoyalaRequest):
         if self.embed_code is None:
             raise OoyalaParameterException('embed_code')
 
-        super(OoyalaThumbnail, self).__init__(OoyalaAPI.BACKLOT.THUMB)
+        super(OoyalaThumbnail, self).__init__(OoyalaAPI.BACKLOT.THUMB, OoyalaAPI.BACKLOT.URL)
 
 class OoyalaAttributeEdit(OoyalaRequest):
     """ An Ooyala attribute api class. The embed code must be provided
@@ -155,7 +158,7 @@ class OoyalaAttributeEdit(OoyalaRequest):
         if self.embed_code is None:
             raise OoyalaParameterException('embed_code')
 
-        super(OoyalaAttributeEdit, self).__init__(OoyalaAPI.BACKLOT.ATTR)
+        super(OoyalaAttributeEdit, self).__init__(OoyalaAPI.BACKLOT.ATTR, OoyalaAPI.BACKLOT.URL)
 
 class OoyalaLabelManage(OoyalaRequest):
     """ Allows full management of labels for backlot. Create/delete/rename and assign
@@ -164,7 +167,7 @@ class OoyalaLabelManage(OoyalaRequest):
 
     def __init__(self, **kwargs):
         self.mode = kwargs.get('mode', None)
-        super(OoyalaLabelManage, self).__init__(OoyalaAPI.BACKLOT.LABEL)
+        super(OoyalaLabelManage, self).__init__(OoyalaAPI.BACKLOT.LABEL, OoyalaAPI.BACKLOT.URL)
 
 
 class OoyalaChannel(OoyalaRequest):
@@ -178,5 +181,18 @@ class OoyalaChannel(OoyalaRequest):
         self.mode = mode
         self.embed_code = embed_code
 
-        super(OoyalaChannel, self).__init__(OoyalaAPI.BACKLOT.CHANNEL)
+        super(OoyalaChannel, self).__init__(OoyalaAPI.BACKLOT.CHANNEL, OoyalaAPI.BACKLOT.URL)
+
+class OoyalaAnalytics(OoyalaRequest):
+    """ Performs an analytic request for data either on the whole account or
+        specific sets of embed_codes.
+        API Definition: http://www.ooyala.com/support/docs/backlot_api#channel
+    """
+
+    def __init__(self, **kwargs):
+        self.date = kwargs.get('date', str(datetime.date.today()))
+        self.granularity = kwargs.get('granularity', O.GRANULATIRY.TOTAL)
+        self.method = kwargs.get('method', O.ANALYTIC_METHODS.TOTALS)
+
+        super(OoyalaAnalytics, self).__init__(OoyalaAPI.ANALYTICS.ANALYTICS, OoyalaAPI.ANALYTICS.URL)
 

@@ -9,5 +9,9 @@ def home(request):
     }
     return render_to_response('landing-pages/video.html', context, context_instance=RequestContext(request))
 
-def channel(request):
+def channel(request, object_id):
+    video = OoyalaItem.objects.get(pk=object_id)
+    context = {
+        'video': video,
+    }
     return render_to_response('landing-pages/video.html', context, context_instance=RequestContext(request))

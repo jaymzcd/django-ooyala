@@ -2,7 +2,7 @@
 class OoyalaAPI(object):
     # The various api's - these append to the QUERY_URI to make the API request
 
-    BASE_URL = 'http://api.ooyala.com/partner/'
+    BASE_URL = 'http://api.ooyala.com/'
 
     class BACKLOT(object):
         QUERY = 'query'
@@ -10,10 +10,15 @@ class OoyalaAPI(object):
         ATTR = 'edit'
         LABEL = 'labels'
         CHANNEL = 'channels'
-        URL = 'http://api.ooyala.com/partner/'
+        URL = 'partner/'
 
     class INGESTION(object):
-        URL = 'http://api.ooyala.com/partner/ingestion/'
+        URL = 'partner/ingestion/'
+        INGESTION = 'ingestion'
+
+    class ANALYTICS(object):
+        URL = ''
+        ANALYTICS = 'analytics'
 
 class OoyalaConstants(object):
 
@@ -74,6 +79,21 @@ class OoyalaConstants(object):
         TWENTYNINE_DAYS = '29d'
         THIRTY_DAYS = '30d'
         THIRTYONE_DAYS = '31d'
+
+    class GRANULATIRY(object):
+        DAY = 'day'
+        WEEK = 'week'
+        MONTH = 'month'
+        TOTAL = 'total'
+
+    class ANALYTIC_METHODS(object):
+        TOTALS = 'account.totals' # for the entire account
+        GEO_TOTALS = 'account.geoTotals'
+        ACCOUNT_VIDEOS  = 'account.videoTotals'
+        ACCOUNT_DOMAIN = 'account.domainTotals'
+        VIDEO = 'video.totals' # for specific embed code (required)
+        VIDEO_DOMAIN = 'video.domainTotals'
+        VIDEO_BEHAVIORAL = 'video.behavioral'
 
     # Ordering variables for Query API
     OOYALA_ORDER_ASC = 'asc'
