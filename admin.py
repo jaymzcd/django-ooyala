@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ooyala.models import OoyalaItem, UrlVideoLink, VideoPage
+from ooyala.models import OoyalaItem, UrlVideoLink, VideoPage, OoyalaChannelList
 from ooyala.library import OoyalaQuery
 
 class OoyalaItemAdmin(admin.ModelAdmin):
@@ -17,7 +17,10 @@ class PageAdmin(admin.ModelAdmin):
 
     filter_horizontal = ('items',)
 
+class ChannelAdmin(admin.ModelAdmin):
+    pass
 
+admin.site.register(OoyalaChannelList, ChannelAdmin)
 admin.site.register(OoyalaItem, OoyalaItemAdmin)
 admin.site.register(UrlVideoLink, LinkAdmin)
 admin.site.register(VideoPage, PageAdmin)

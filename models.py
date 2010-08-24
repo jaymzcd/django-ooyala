@@ -110,8 +110,8 @@ class OoyalaChannelList(models.Model):
     video items. You can treat channels just like regular video's in Ooyala so
     these can be used to output other videos from a channel """
 
-    channel = models.ForeignKey(OoyalaItem)
-    videos = models.ManyToManyField(OoyalaItem)
+    channel = models.ForeignKey(OoyalaItem, related_name='channel', unique=True)
+    videos = models.ManyToManyField(OoyalaItem, related_name='videos')
 
     def __unicode__(self):
         return self.channel.title
