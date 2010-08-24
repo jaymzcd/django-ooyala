@@ -12,7 +12,8 @@ from ooyala.models import OoyalaItem
 @staff_member_required
 def backlot_query(request):
 
-    req = OoyalaAnalytics()
+    req = OoyalaChannel(embed_code='wwMDhyOh2lFLMZdBidG8UEgrvPbFSPmG')
+
     ooyala_response = req.process()
     print ooyala_response
 
@@ -24,5 +25,3 @@ def backlot_query(request):
         print "got an error back"
 
     return HttpResponse("tada")
-
-

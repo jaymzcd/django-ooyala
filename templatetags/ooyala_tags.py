@@ -20,7 +20,7 @@ def ooyala_video(for_url, width=RENDER_SIZES['regular'][0], height=RENDER_SIZES[
 def ooyala_for_object(video_object, width=RENDER_SIZES['large'][0], height=RENDER_SIZES['large'][1]):
     try:
         return """
-            <script src="http://www.ooyala.com/player.js?width=%d&height=%d&embedCode=%s"></script>
+           <script src="http://www.ooyala.com/player.js?width=%d&height=%d&wmode=transparent&embedCode=%s"></script>
         """ % (width, height, video_object.embed_code)
     except AttributeError:
         return ""
@@ -38,4 +38,13 @@ def ooyala_channel_list(limit=None):
 def ooyala_facebook_headers(video_object):
     return {
         'video': video_object,
+    }
+
+@register.inclusion_tag('ooyala/tags/thumbnail_list.html')
+def ooyala_recent_items(limit=5):
+    """ Returns recently viewed items
+        TODO: actually implement that, for now random poll
+    """
+    return {
+        'items': OoyalaItem.objects.all().order_by('?')[:limit]
     }

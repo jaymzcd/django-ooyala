@@ -26,7 +26,7 @@ class OoyalaRequest(object):
     def __init__(self, action, api_url, expires=None):
         self.created = time.mktime(time.gmtime()) # time.time is giving me the wrong time!?
         self.action = action # set to the particular backlot api you want to use
-        self.api_url = api_url # differnt "top level" API's have different URI's
+        self.api_url = api_url # different "top level" API's have different URI's
         if expires:
             self.expires = expires
 
@@ -100,6 +100,8 @@ class OoyalaQuery(OoyalaRequest):
     """
 
     def __init__(self, **kwargs):
+        super(OoyalaQuery, self).__init__(OoyalaAPI.BACKLOT.QUERY, OoyalaAPI.BACKLOT.URL)
+
         self.content_type = kwargs.get('content_type', None)
         self.description = kwargs.get('description', None)
         self.embed_code = kwargs.get('embed_code', None)
@@ -115,7 +117,6 @@ class OoyalaQuery(OoyalaRequest):
         self.order_by = kwargs.get('order_by', None)
         self.limit = O.OOYALA_QUERY_LIMIT
 
-        super(OoyalaQuery, self).__init__(OoyalaAPI.BACKLOT.QUERY, OoyalaAPI.BACKLOT.URL)
 
 class OoyalaThumbnail(OoyalaRequest):
     """ An Ooyala thumbnail lookup. The embed code must be provided
@@ -124,6 +125,8 @@ class OoyalaThumbnail(OoyalaRequest):
 
     def __init__(self, **kwargs):
         """ All params for this API call must be defined """
+        super(OoyalaThumbnail, self).__init__(OoyalaAPI.BACKLOT.THUMB, OoyalaAPI.BACKLOT.URL)
+
         defaults = OOYALA_PARAMS[OOYALA_ACTION_THUMB]['DEFAULTS']
 
         self.embed_code = kwargs.get('embed_code', None)
@@ -133,7 +136,6 @@ class OoyalaThumbnail(OoyalaRequest):
         if self.embed_code is None:
             raise OoyalaParameterException('embed_code')
 
-        super(OoyalaThumbnail, self).__init__(OoyalaAPI.BACKLOT.THUMB, OoyalaAPI.BACKLOT.URL)
 
 class OoyalaAttributeEdit(OoyalaRequest):
     """ An Ooyala attribute api class. The embed code must be provided
@@ -146,6 +148,7 @@ class OoyalaAttributeEdit(OoyalaRequest):
 
     def __init__(self, **kwargs):
         """ All params for this API call must be defined """
+        super(OoyalaAttributeEdit, self).__init__(OoyalaAPI.BACKLOT.ATTR, OoyalaAPI.BACKLOT.URL)
 
         self.embed_code = kwargs.get('embed_code', None)
         self.title = kwargs.get('title', None)
@@ -158,7 +161,6 @@ class OoyalaAttributeEdit(OoyalaRequest):
         if self.embed_code is None:
             raise OoyalaParameterException('embed_code')
 
-        super(OoyalaAttributeEdit, self).__init__(OoyalaAPI.BACKLOT.ATTR, OoyalaAPI.BACKLOT.URL)
 
 class OoyalaLabelManage(OoyalaRequest):
     """ Allows full management of labels for backlot. Create/delete/rename and assign
@@ -166,8 +168,9 @@ class OoyalaLabelManage(OoyalaRequest):
     """
 
     def __init__(self, **kwargs):
-        self.mode = kwargs.get('mode', None)
         super(OoyalaLabelManage, self).__init__(OoyalaAPI.BACKLOT.LABEL, OoyalaAPI.BACKLOT.URL)
+
+        self.mode = kwargs.get('mode', None)
 
 
 class OoyalaChannel(OoyalaRequest):
@@ -177,11 +180,11 @@ class OoyalaChannel(OoyalaRequest):
         API Definition: http://www.ooyala.com/support/docs/backlot_api#channel
     """
 
-    def __init__(self, mode, embed_code, **kwargs):
-        self.mode = mode
-        self.embed_code = embed_code
-
+    def __init__(self, embed_code, **kwargs):
         super(OoyalaChannel, self).__init__(OoyalaAPI.BACKLOT.CHANNEL, OoyalaAPI.BACKLOT.URL)
+
+        self.mode = kwargs.get('mode', O.CHANNEL_MODE.LIST)
+        self.embed_code = embed_code
 
 class OoyalaAnalytics(OoyalaRequest):
     """ Performs an analytic request for data either on the whole account or
@@ -190,9 +193,12 @@ class OoyalaAnalytics(OoyalaRequest):
     """
 
     def __init__(self, **kwargs):
+        super(OoyalaAnalytics, self).__init__(OoyalaAPI.ANALYTICS.ANALYTICS, OoyalaAPI.ANALYTICS.URL)
+
         self.date = kwargs.get('date', str(datetime.date.today()))
         self.granularity = kwargs.get('granularity', O.GRANULATIRY.TOTAL)
         self.method = kwargs.get('method', O.ANALYTIC_METHODS.TOTALS)
+        self.video = kwargs.get('video', None)
 
-        super(OoyalaAnalytics, self).__init__(OoyalaAPI.ANALYTICS.ANALYTICS, OoyalaAPI.ANALYTICS.URL)
+
 
