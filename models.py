@@ -116,6 +116,10 @@ class OoyalaChannelList(models.Model):
     def __unicode__(self):
         return self.channel.title
 
+    @property
+    def total_items(self):
+        return self.videos.count()
+
 class UrlVideoLink(models.Model):
     url = models.CharField(unique=True, max_length=255) # unique for now, a path like /news/item/10
     url.help_text = mark_safe("""The url that this video should be connected to '(assuming template supports video). Eg <em>/news/item/</em>, use <strong>/</strong> for home.""")

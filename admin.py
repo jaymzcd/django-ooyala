@@ -18,7 +18,9 @@ class PageAdmin(admin.ModelAdmin):
     filter_horizontal = ('items',)
 
 class ChannelAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ('channel__title',)
+    list_display = ('channel', 'total_items')
+    filter_horizontal = ('videos',)
 
 admin.site.register(OoyalaChannelList, ChannelAdmin)
 admin.site.register(OoyalaItem, OoyalaItemAdmin)
