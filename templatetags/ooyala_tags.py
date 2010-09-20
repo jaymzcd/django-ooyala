@@ -1,5 +1,5 @@
 from django import template
-from ooyala.models import UrlVideoLink, OoyalaItem
+from ooyala.models import UrlVideoLink, OoyalaItem, OoyalaChannelList
 from ooyala.conf import RENDER_SIZES
 
 register = template.Library()
@@ -47,4 +47,26 @@ def ooyala_recent_items(limit=5):
     """
     return {
         'items': OoyalaItem.objects.all().order_by('?')[:limit]
+    }
+
+@register.inclusion_tag('ooyala/tags/thumbnail_list.html')
+def ooyala_channel_more(video):
+    """ Returns more OoyalaItems which are in the same channel
+    as our current video. Takes the first channel it finds for now.
+    If we get a channel as an item then return all its videos. """
+
+    if video.content_type == 'Channel':
+        try:
+            channel = OoyalaChannelList.objects.get(channel=video)
+            similiar_list = channel.videos.all()
+        except OoyalaChannelList.DoesNotExist:
+            similiar_list = None
+    else:
+        try:
+            channel = OoyalaChannelList.objects.filter(videos=video)[0]
+            similiar_list = channel.videos.all().exclude(pk=video.pk)
+        except IndexError:
+            similiar_list = None,
+    return {
+        'items': similiar_list,
     }

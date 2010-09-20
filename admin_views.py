@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.template import RequestContext
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render_to_response
@@ -12,7 +13,7 @@ from ooyala.models import OoyalaItem
 @staff_member_required
 def backlot_query(request):
 
-    req = OoyalaChannel(embed_code='wwMDhyOh2lFLMZdBidG8UEgrvPbFSPmG')
+    req = OoyalaQuery(page_id=500)
 
     ooyala_response = req.process()
     print ooyala_response

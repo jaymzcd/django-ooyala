@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from ooyala.constants import OoyalaAPI
 from django.conf import settings
 
@@ -46,6 +47,6 @@ OOYALA_PARAMS = {
 }
 
 RENDER_SIZES = {
-    'regular': (335, 243),
+    'regular': (325, 185),
     'large': (630, 354),
 }
