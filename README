@@ -22,8 +22,19 @@ Add "ooyala" to your settings.py and your ooyala API keys thus:
         }
     }
 
-The admin_views aren't needed, I use those just to do some debugging as the code
-is developed. To hook them in use the following in your urlconf (simpler for now):
+The templates within *ooyala/templates/ooyala* will use the *ooyala_base.html* file
+but you can override this by adding a 'BASE_TEMPLATE' key to the OOYALA settings
+variable, eg:
 
+    OOYALA.update('BASE_TEMPLATE', 'videos/custom_ooyala.html')
+
+The admin_views aren't needed, I use those just to do some debugging as the code
+is developed. For the client side urls (detail/index/search) add in the client_urls.
+To hook them in use the following in your urlconf.
+
+        (r'^videos/', include('ooyala.client_urls', namespace='video')),
         (r'^admin/ooyala/', include('ooyala.urls', namespace='ooyala')),
+
+Note that (for now) the client urls are namespaced to *video* whilst the admin
+ones use *ooyala*.
 
