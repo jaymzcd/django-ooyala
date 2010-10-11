@@ -1,0 +1,30 @@
+{% extends BASE_TEMPLATE %}
+{% load ooyala_tags %}
+
+{% block add_head %}
+    {% ooyala_facebook_headers video %}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ video.title }}</h1>
+    <h2>Posted {{ video.updated_at|date }} by <span style="color: #8f0000">i am vans</span></h2>
+    {% block videodata %}{{ block.super }}{% endblock %}
+    {% ooyala_for_object video 630 %}
+    {% block videotags %}{{ block.super }}{% endblock %}
+    {% block videoratings %}{{ block.super }}{% endblock %}
+     <div class="fb-root"></div>
+	<script type="text/javascript">
+    //<![CDATA[
+    	document.writeln('<div class="FB"><fb:like href="http://www.vans.com{{ object.get_absolute_url }}" layout="button_count" width="70"></fb:like></div>');
+    //]]>
+    </script>
+    <div class="shareLinks">
+        <a href="http://twitter.com/share?url=http://www.vans.com{{ object.get_absolute_url }}" class="twitter-share-button" data-count="horizontal">Tweet</a>
+    </div>
+    <div class="js-kit-comments" permalink="http://www.vans.com{{ object.get_absolute_url }}" uniq="{{ video.title }}" backwards="yes"></div>
+    <script src="http://cdn.js-kit.com/scripts/comments.js"></script>
+{% endblock %}
+
+{% block recently-viewed %}
+    {% ooyala_channel_more video %}
+{% endblock %}

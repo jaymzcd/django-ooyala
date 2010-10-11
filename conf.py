@@ -4,6 +4,10 @@ from django.conf import settings
 
 if hasattr(settings, 'OOYALA'):
     API_KEYS = settings.OOYALA['API_KEYS']
+    try:
+        BASE_TEMPLATE = settings.OOYALA['BASE_TEMPLATE']
+    except KeyError:
+        BASE_TEMPLATE = 'ooyala/ooyala_base.html'
 else:
     raise Exception('Cannot import your Ooyala API keys from settings.py')
 

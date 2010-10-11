@@ -1,0 +1,15 @@
+{% extends 'landing-pages/video.html' %}
+
+{% block leftcol-content %}
+    <h1>Video Search Results</h1>
+    <h2>You searched for <em>{{ search_query }}</em></h2>
+    <ul id="video-search_results">
+    {% for video in object_list %}
+        <li>
+            {% if video.thumbnail %}<img src="{{ video.thumbnail }}" alt="{{ video.title }} preview" class="search_result-thumb" />{% endif %}
+            <a href="{{ video.get_absolute_url }}" alt="Watch {{ video.title }}">{{ video.title }}</a><br />
+            Posted {{ video.updated_at|date }}
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

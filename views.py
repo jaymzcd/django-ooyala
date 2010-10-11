@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from ooyala.models import OoyalaItem, VideoPage
+from ooyala.conf import BASE_TEMPLATE
 
 try:
     video_homepage = VideoPage.objects.get(url='/')
@@ -17,9 +18,10 @@ def home(request):
     latest_videos = OoyalaItem.live.all().order_by('-updated_at')
     context = {
         'video_page': page,
+        'BASE_TEMPLATE': BASE_TEMPLATE,
     }
     return list_detail.object_list(request, latest_videos, paginate_by=8,
-        template_name='landing-pages/video.html', extra_context=context)
+        template_name='ooyala/video_index.html', extra_context=context)
 
 def channel(request, object_id):
     """ Returns a specific OoyalaItem (not necassarily a channel). We *could*
@@ -31,8 +33,9 @@ def channel(request, object_id):
     context = {
         'video_page': video_homepage,
         'video': video,
+        'BASE_TEMPLATE': BASE_TEMPLATE,
     }
-    return render_to_response('video/video_item.html', context, \
+    return render_to_response('ooyala/video_item.html', context, \
         context_instance=RequestContext(request))
 
 def search(request):
@@ -42,9 +45,10 @@ def search(request):
         items = OoyalaItem.live.all().filter(title__icontains=search_query)
         context = {
             'items': items,
+            'BASE_TEMPLATE': BASE_TEMPLATE,            
         }
         return list_detail.object_list(request, items, \
-            template_name='video/search_results.html', \
+            template_name='ooyala/search_results.html', \
             extra_context={
                 'search_query': search_query,
                 'video_page': video_homepage,

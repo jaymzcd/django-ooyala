@@ -1,0 +1,108 @@
+{% extends 'layouts/2col.html' %}
+{% load util_tags ooyala_tags %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/ratings.js"></script>
+{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/video.css">
+
+{% endblock %}
+{% block leftspan %}28{% endblock %}
+{% block rightspan %}17{% endblock %}
+
+{% block add_head %}
+    {% if page %}
+        {% ooyala_facebook_headers page.featured_item %}
+    {% endif %}
+{% endblock %}
+
+{% block leftcol-content %}
+    {% with page.featured_item as video %}
+    <div class="primaryvideo-summary">
+        <h1>{{ video.title }}</h1>
+        <h2>Posted {{ video.updated_at|date }} by i am vans</h2> {# TODO: update to have a user associated #}
+        {% ooyala_for_object video 555 %}
+        <p>{{ video.description }}</p>
+    </div>
+    <ul class="tags">
+        {% for tag in video.tag_list %}
+        <div class="rounded">{{ tag }}</div>
+    {% endfor %}
+    </ul>
+
+    
+    {% with video as object %}
+        {% include 'rating/blocks/default.html' %}
+    {% endwith %}
+    {% titlebar "latest videos" %}
+    <ul id="latestVideosList">
+        <li>
+            <a href=""></a>
+            <span><a href="">Video title</a></span>
+            <p>Views: 1000<br />Channel: Skate</p>
+        </li>
+        <li>
+            <a href=""></a>
+            <span><a href="">Video title</a></span>
+            <p>Views: 1000<br />Channel: Skate</p>
+        </li>
+        <li class="selected">
+            <a href=""></a>
+            <span><a href="">Video title</a></span>
+            <p>Views: 1000<br />Channel: Skate</p>
+        </li>
+        <li>
+            <a href=""></a>
+            <span><a href="">Video title</a></span>
+            <p>Views: 1000<br />Channel: Skate</p>
+        </li>
+        <li>
+            <a href=""></a>
+            <span><a href="">Video title</a></span>
+            <p>Views: 1000<br />Channel: Skate</p>
+        </li>
+        <li>
+            <a href=""></a>
+            <span><a href="">Video title</a></span>
+            <p>Views: 1000<br />Channel: Skate</p>
+        </li>
+    </ul>
+    {% titlebar "Comments" %}
+    <div class="js-kit-comments" permalink="/{{ video.title }}" uniq="{{ video.title }}"></div>
+    <script src="http://cdn.js-kit.com/scripts/comments.js"></script>
+    {% endwith %}
+{% endblock %}
+
+{% block rightcol-content %}
+    <div id="video-searchform">
+        <form method="POST" action="{% url video:search %}">
+            {% csrf_token %}
+            <input type="search" name="search_query" />
+            <input type="submit" value="go" class="button" />
+        </form>
+    </div>
+
+    <div class="channel-list">
+        <h2>Select a video channel:</h2>
+        <ul class="ooyala-channel-list">
+        {% if not video_homepage %}
+            {% for channel in page.items.all %}
+                <li><a href="{{ channel.get_absolute_url }}" alt="View channel">{{ channel.title }}</a></li>
+            {% endfor %}
+        {% else %}
+            {% for channel in video_homepage.items.all %}
+                <li><a href="{{ channel.get_absolute_url }}" alt="View channel">{{ channel.title }}</a></li>
+            {% endfor %}
+        {% endif %}
+        </ul>
+    </div>
+
+    {% titlebar "Recently viewed videos" %}
+    {# How to do this? perhaps grep apache logs? Don't really want to store views in a db. maybe Ooyala api? #}
+    {% ooyala_recent_items %}
+
+{% endblock %}
