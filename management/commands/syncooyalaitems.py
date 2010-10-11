@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = 'Imports all channel and video content from Ooyala to the admin'
 
     def handle(self, *args, **kwargs):
-        req = OoyalaQuery(page_id=730)
+        req = OoyalaQuery(page_id=0)
         ooyala_response = req.process()
         count = 0
 

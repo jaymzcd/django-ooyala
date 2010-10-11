@@ -4,7 +4,8 @@ import urllib
 import base64
 import time
 import datetime
-import xml
+from xml.dom.minidom import parseString
+from xml.parsers.expat import ExpatError
 
 from ooyala.exceptions import OoyalaParameterException
 from ooyala.constants import OoyalaConstants as O
@@ -77,8 +78,8 @@ class OoyalaRequest(object):
             self.processed = True
             backlot.close()
         try:
-            return xml.dom.minidom.parseString(self.response)
-        except xml.parsers.expat.ExpatError:
+            return parseString(self.response)
+        except ExpatError:
             # we seem to have had an issue decoding that XML, send back response
             return self.response
 
