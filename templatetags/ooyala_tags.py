@@ -12,7 +12,7 @@ def ooyala_video(for_url, width=RENDER_SIZES['regular'][0], height=RENDER_SIZES[
         return ''
     return """
         <div class="ooyala-video">
-            <script src="http://www.ooyala.com/player.js?width=%d&height=%d&embedCode=%s"></script>
+            <script src="http://www.ooyala.com/player.js?wmode=transparent&width=%d&height=%d&embedCode=%s"></script>
         </div>
     """ % (width, height, video.item.embed_code)
 
@@ -20,7 +20,7 @@ def ooyala_video(for_url, width=RENDER_SIZES['regular'][0], height=RENDER_SIZES[
 def ooyala_for_object(video_object, width=RENDER_SIZES['large'][0], height=RENDER_SIZES['large'][1]):
     try:
         return """
-           <script src="http://www.ooyala.com/player.js?width=%d&height=%d&wmode=transparent&embedCode=%s"></script>
+           <script src="http://www.ooyala.com/player.js?wmode=transparent&width=%d&height=%d&wmode=transparent&embedCode=%s"></script>
         """ % (width, height, video_object.embed_code)
     except AttributeError:
         return ""
