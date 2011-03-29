@@ -10,12 +10,14 @@ class OoyalaItem(models.Model):
 
     STATUS_CHOICES = (
         (0, 'Offline'),
-        (5, 'Live')
+        (5, 'Live'),
+        (-1, 'File Missing'),
     )
     # Ugh!
     STATUS_LOOKUP = {
         'offline': 0,
         'live': 5,
+        'filemissing': -1,
     }
 
     embed_code = models.CharField(max_length=50, unique=True)
@@ -24,13 +26,13 @@ class OoyalaItem(models.Model):
     status = models.IntegerField(max_length=10, default=5, choices=STATUS_CHOICES)
     content_type = models.CharField(max_length=20)
     length = models.IntegerField(blank=True, null=True)
-    size = models.IntegerField(default=0)
+    size = models.BigIntegerField(default=0)
     updated_at = models.DateTimeField()
     flight_start_time = models.DateTimeField()
     width = models.IntegerField()
     height = models.IntegerField()
     thumbnail = models.URLField(blank=True, null=True)
-    stat = models.CharField(max_length=255)
+    stat = models.CharField(max_length=255, blank=True, null=True)
 
     tags = models.CharField(max_length=255, blank=True, null=True)
     tags.help_text = 'Simple tag field, seperate with commas'
