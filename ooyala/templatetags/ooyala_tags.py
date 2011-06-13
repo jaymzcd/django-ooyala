@@ -1,6 +1,7 @@
 from django import template
 from ooyala.models import UrlVideoLink, OoyalaItem, OoyalaChannelList
-from ooyala.conf import RENDER_SIZES
+from ooyala.library import OoyalaThumbnail
+from ooyala.conf import RENDER_SIZES, NO_THUMB
 
 register = template.Library()
 
@@ -70,3 +71,17 @@ def ooyala_channel_more(video):
     return {
         'items': similiar_list,
     }
+
+@register.simple_tag
+def ooyala_thubmnail(embed_code, resolution='320x240', indicies="0-25"):
+    """ Grab one of the custom thumbnail images - ooyala may return bigger
+    images than requested at a higher compression rate so they should be also
+    force-sized in your CSS. Indicies will return a number of thumbs, ones
+    in the middle tend to be "better" suited to display """
+    try:
+        thumbs = OoyalaThumbnail(embed_code=embed_code, resolution=resolution, indicies=indicies).process()
+        thumbs_data = thumbs.getElementsByTagName('thumbnail')
+        idx = len(thumbs_data)/2
+        return thumbs_data[idx].firstChild.nodeValue
+    except (IndexError, AttributeError):
+        return NO_THUMB

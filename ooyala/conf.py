@@ -11,6 +11,12 @@ if hasattr(settings, 'OOYALA'):
 else:
     raise Exception('Cannot import your Ooyala API keys from settings.py')
 
+if hasattr(settings, 'OOYALA') and 'NO_THUMB' in settings.OOYALA:
+    # Used when no custom thumbnail is found
+    NO_THUMB = settings.OOYALA['NO_THUMB']
+else:
+    NO_THUMB = ''
+
 # Parameters, remappings and default values for each API type. The base class
 # will use the data here to make sure only valid params are passed and it will
 # also rename parameters from python style to the required schema defintion
@@ -26,7 +32,7 @@ OOYALA_PARAMS = {
     OoyalaAPI.BACKLOT.THUMB: {
         'PARAMS': ['indicies', 'resolution', 'embed_code'],
         'REMAPS': {'embed_code': 'embedCode', 'indicies': 'range' },
-        'DEFAULTS': {'resolution': '320x240', 'indicies': '1,2,3' },
+        'DEFAULTS': {'resolution': '320x240', 'indicies': '0-25' },
     },
     OoyalaAPI.BACKLOT.ATTR: {
         'PARAMS': ['title', 'description', 'flight_end', 'flight_start', 'status', 'hosted_at', 'embed_code'],

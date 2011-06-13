@@ -104,4 +104,4 @@ class OoyalaConstants(object):
     OOYALA_QUERY_MODE_AND = 'and'
 
     # Number of seconds to add to current time for expiry
-    DEFAULT_EXPIRE_TIME = 300
+    DEFAULT_EXPIRE_TIME = 3000

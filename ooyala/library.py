@@ -129,7 +129,7 @@ class OoyalaThumbnail(OoyalaRequest):
         """ All params for this API call must be defined """
         super(OoyalaThumbnail, self).__init__(OoyalaAPI.BACKLOT.THUMB, OoyalaAPI.BACKLOT.URL)
 
-        defaults = OOYALA_PARAMS[OOYALA_ACTION_THUMB]['DEFAULTS']
+        defaults = OOYALA_PARAMS[OoyalaAPI.BACKLOT.THUMB]['DEFAULTS']
 
         self.embed_code = kwargs.get('embed_code', None)
         self.indicies = kwargs.get('indicies', defaults['indicies'])
