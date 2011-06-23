@@ -13,6 +13,7 @@ class OoyalaItem(models.Model):
         (5, 'Live'),
         (-1, 'File Missing'),
         (-2, 'Uploading'),
+        (-3, 'Processing'),
     )
     # Ugh!
     STATUS_LOOKUP = {
@@ -20,6 +21,7 @@ class OoyalaItem(models.Model):
         'live': 5,
         'filemissing': -1,
         'uploading': -2,
+        'processing': -3,
     }
 
     embed_code = models.CharField(max_length=50, unique=True)
