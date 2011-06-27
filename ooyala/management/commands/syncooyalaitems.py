@@ -10,40 +10,38 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         count = 0
-        total = 0
-        i = 1
+        offset = 1
         retries_left = 5
         while True:
-            req = OoyalaQuery(page_id=i)
+            req = OoyalaQuery(page_id=offset)
             ooyala_response = req.process()
 
-            if type(ooyala_response) != str:
+            if not isinstance(ooyala_response, basestring):
                 items = ooyala_response.getElementsByTagName('item')
                 if not items:
-                    print 'No more items after %d' % i
+                    sys.stdout.write('\nNo more items after offset %d\n' % offset)
                     break
                 else:
-                    print '%d items from offset %s' % (len(items), i)
-                total += len(items)
-                for item in items:
+                    sys.stdout.write('\nFound %d items from offset %s\n' % (len(items), offset))
+                for item in items[:2]:
                     [ooyala_item, created] = OoyalaItem.from_xml(item)
                     try:
                         if created:
                             count += 1
                             sys.stdout.write('Added %s (%s)\n' % (str(ooyala_item.title), ooyala_item.content_type))
                         else:
-                            print "Skipping %s" % str(ooyala_item.title)
+                            sys.stdout.write("Skipping %s" % str(ooyala_item.title))
                     except UnicodeEncodeError:
-                        print 'decode error for title'
+                        sys.stdout.write('decode error for title')
             else:
                 sys.stdout.write('Problem getting the data from ooyala, retrying...\n')
                 retries_left -= 1
                 if retries_left <= 0:
-                    print 'TOO MANY RETRIES GIVING UP!'
+                    sys.stdout.write('TOO MANY RETRIES GIVING UP!')
                     break
-                continue
+                continue # keep same offset
 
-            i += 500
+            offset += 500
 
-        sys.stdout.write('\nCOMPLETE: All items imported - %d imported out of %s in total\n\n' % (count, total))
+        sys.stdout.write('\nCOMPLETE: All items imported - %s in total\n\n' % count)
 
