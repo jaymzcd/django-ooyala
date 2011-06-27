@@ -94,6 +94,7 @@ class OoyalaRequest(object):
         signature = hashlib.sha256(''.join([API_KEYS['SECRET_CODE'], param_str]))
         digest64 = base64.b64encode(signature.digest())
         signature = digest64[0:43].rstrip('=')
+        signature = urllib.quote(signature)
         return signature
 
 class OoyalaQuery(OoyalaRequest):
