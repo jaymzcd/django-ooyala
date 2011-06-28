@@ -23,7 +23,7 @@ class Command(BaseCommand):
                     break
                 else:
                     sys.stdout.write('\nFound %d items from offset %s\n' % (len(items), offset))
-                for item in items[:2]:
+                for item in items:
                     [ooyala_item, created] = OoyalaItem.from_xml(item)
                     try:
                         if created:
