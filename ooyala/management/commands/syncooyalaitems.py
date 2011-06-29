@@ -9,25 +9,45 @@ class Command(BaseCommand):
     help = 'Imports all channel and video content from Ooyala to the admin'
 
     def handle(self, *args, **kwargs):
-        req = OoyalaQuery(page_id=0)
-        ooyala_response = req.process()
+        VIDEOS_PER_PAGE = 500
         count = 0
+        offset = 1
+        retries_left = 5
+        while True:
+            req = OoyalaQuery(page_id=offset)
+            ooyala_response = req.process()
 
-        if type(ooyala_response)!=str:
-            items = ooyala_response.getElementsByTagName('item')
-            for item in items:
-                [ooyala_item, created] = OoyalaItem.from_xml(item)
-                try:
-                    if created:
-                        count += 1
-                        sys.stdout.write('Added %s (%s)\n' % (str(ooyala_item.title), ooyala_item.content_type))
-                    else:
-                        print "Skipping %s" % str(ooyala_item.title)
-                except UnicodeEncodeError:
-                    print 'decode error for title'
-        else:
-            sys.stdout.write('Problem getting the data from ooyala, retrying...\n')
-            self.handle(self, *args, **kwargs)
+            if not isinstance(ooyala_response, basestring):
+                items = ooyala_response.getElementsByTagName('item')
+                if items:
+                    sys.stdout.write('Found items %d - %d\n' % (offset, offset+len(items)-1))
+                else:
+                    #No more items
+                    break
+                for item in items:
+                    [ooyala_item, created] = OoyalaItem.from_xml(item)
+                    try:
+                        if created:
+                            count += 1
+                            sys.stdout.write('Added %s (%s)\n' % (str(ooyala_item.title), ooyala_item.content_type))
+                        else:
+                            sys.stdout.write("Skipping %s\n" % str(ooyala_item.title))
+                            pass
+                    except UnicodeEncodeError:
+                        sys.stdout.write('Decode error for title\n')
+                if len(items) < VIDEOS_PER_PAGE:
+                    #This was the last page of items
+                    break
+            else:
+                sys.stdout.write('Problem getting the data from ooyala, retrying...\n')
+                retries_left -= 1
+                if retries_left <= 0:
+                    sys.stdout.write('TOO MANY RETRIES GIVING UP!\n')
+                    break
+                continue # keep same offset
 
-        sys.stdout.write('\nCOMPLETE: All items imported - %d in total\n\n' % count)
+            offset += VIDEOS_PER_PAGE
+
+
+        sys.stdout.write('\nCOMPLETE: All items imported - %s in total\n\n' % count)
 
