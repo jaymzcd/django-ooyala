@@ -73,15 +73,28 @@ def ooyala_channel_more(video):
     }
 
 @register.simple_tag
-def ooyala_thubmnail(embed_code, resolution='320x240', indicies="0-25"):
+def ooyala_thubmnail(embed_code, resolution='320x240', indicies="0-25", cache=True):
     """ Grab one of the custom thumbnail images - ooyala may return bigger
     images than requested at a higher compression rate so they should be also
     force-sized in your CSS. Indicies will return a number of thumbs, ones
     in the middle tend to be "better" suited to display """
+    thumb = None
     try:
-        thumbs = OoyalaThumbnail(embed_code=embed_code, resolution=resolution, indicies=indicies).process()
-        thumbs_data = thumbs.getElementsByTagName('thumbnail')
-        idx = len(thumbs_data)/2
-        return thumbs_data[idx].firstChild.nodeValue
+
+        if cache:
+            video = OoyalaItem.objects.get(embed_code=embed_code)
+            thumb = video.thumbnail
+
+        if not thumb:
+            thumbs = OoyalaThumbnail(embed_code=embed_code, resolution=resolution, indicies=indicies).process()
+            thumbs_data = thumbs.getElementsByTagName('thumbnail')
+            idx = len(thumbs_data)/2
+            thumb = thumbs_data[idx].firstChild.nodeValue
+
+        if cache:
+            video.thumbnail = thumb
+            video.save()
+
+        return thumb
     except (IndexError, AttributeError):
         return NO_THUMB
