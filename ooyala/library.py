@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import hashlib
 import urllib
 import base64
 import time
@@ -11,6 +10,28 @@ from ooyala.exceptions import OoyalaParameterException
 from ooyala.constants import OoyalaConstants as O
 from ooyala.constants import OoyalaAPI
 from ooyala.conf import *
+
+# Get a sha256 function we can use
+try:
+    from hashlib import sha256
+except ImportError:
+    # Try import PyCrypto's SHA256 function - typically used on python2.4 installs
+    from Crypto.Hash import SHA256
+
+    class sha256(object):
+        """ Creates a sha256 wrapper class we can use the same way as the one from
+        hashlib for compatibility """
+
+        def __init__(self, str):
+            self.str = str
+            self.hash = SHA256.new(self.str)
+
+        def digest(self):
+            return self.hash.hexdigest()
+
+    except ImportError:
+        raise Exception('You must have a method to create sha256 hashes')
+
 
 class OoyalaRequest(object):
     """
@@ -91,7 +112,7 @@ class OoyalaRequest(object):
         """
         keys = sorted(self.params().keys())
         param_str = ''.join([key + '=' + self.params()[key].__str__() for key in keys])
-        signature = hashlib.sha256(''.join([API_KEYS['SECRET_CODE'], param_str]))
+        signature = sha256(''.join([API_KEYS['SECRET_CODE'], param_str]))
         digest64 = base64.b64encode(signature.digest())
         signature = digest64[0:43].rstrip('=')
         signature = urllib.quote(signature)
