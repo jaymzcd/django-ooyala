@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='django-ooyala',
-      version='0.9.3',
+      version='0.9.4',
       description='A django library for interacting with the Ooyala video platform',
       author='Jaymz Campbell',
       author_email='jaymz@jaymz.eu',
