@@ -30,7 +30,7 @@ except ImportError:
             self.hash = SHA256.new(self.str)
 
         def digest(self):
-            return self.hash.hexdigest()
+            return self.hash.digest()
 
 
 class OoyalaRequest(object):
