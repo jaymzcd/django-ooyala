@@ -16,7 +16,10 @@ try:
     from hashlib import sha256
 except ImportError:
     # Try import PyCrypto's SHA256 function - typically used on python2.4 installs
-    from Crypto.Hash import SHA256
+    try:
+        from Crypto.Hash import SHA256
+    except ImportError:
+        raise Exception('You must have a method to create sha256 hashes')
 
     class sha256(object):
         """ Creates a sha256 wrapper class we can use the same way as the one from
@@ -28,9 +31,6 @@ except ImportError:
 
         def digest(self):
             return self.hash.hexdigest()
-
-    except ImportError:
-        raise Exception('You must have a method to create sha256 hashes')
 
 
 class OoyalaRequest(object):
