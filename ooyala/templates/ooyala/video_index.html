@@ -40,39 +40,10 @@
                 {% include 'rating/blocks/default.html' %}
             {% endif %}
         {% endwith %}
+
         {% titlebar "latest videos" %}
-        <ul id="latestVideosList">
-            <li>
-                <a href=""></a>
-                <span><a href="">Video title</a></span>
-                <p>Views: 1000<br />Channel: Skate</p>
-            </li>
-            <li>
-                <a href=""></a>
-                <span><a href="">Video title</a></span>
-                <p>Views: 1000<br />Channel: Skate</p>
-            </li>
-            <li class="selected">
-                <a href=""></a>
-                <span><a href="">Video title</a></span>
-                <p>Views: 1000<br />Channel: Skate</p>
-            </li>
-            <li>
-                <a href=""></a>
-                <span><a href="">Video title</a></span>
-                <p>Views: 1000<br />Channel: Skate</p>
-            </li>
-            <li>
-                <a href=""></a>
-                <span><a href="">Video title</a></span>
-                <p>Views: 1000<br />Channel: Skate</p>
-            </li>
-            <li>
-                <a href=""></a>
-                <span><a href="">Video title</a></span>
-                <p>Views: 1000<br />Channel: Skate</p>
-            </li>
-        </ul>
+        {% ooyala_recent_items %}
+
         {% titlebar "Comments" %}
         <div class="js-kit-comments" permalink="/{{ video.title }}" uniq="{{ video.title }}"></div>
         <script src="http://cdn.js-kit.com/scripts/comments.js"></script>
