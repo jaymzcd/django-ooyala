@@ -15,65 +15,67 @@
 {% block rightspan %}17{% endblock %}
 
 {% block add_head %}
-    {% if page %}
+    {% if page and page.featured_item %}
         {% ooyala_facebook_headers page.featured_item %}
     {% endif %}
 {% endblock %}
 
 {% block leftcol-content %}
     {% with page.featured_item as video %}
-    <div class="primaryvideo-summary">
-        <h1>{{ video.title }}</h1>
-        <h2>Posted {{ video.updated_at|date }} by i am vans</h2> {# TODO: update to have a user associated #}
-        {% ooyala_for_object video 555 %}
-        <p>{{ video.description }}</p>
-    </div>
-    <ul class="tags">
-        {% for tag in video.tag_list %}
-        <div class="rounded">{{ tag }}</div>
-    {% endfor %}
-    </ul>
+        <div class="primaryvideo-summary">
+            <h1>{{ video.title }}</h1>
+            <h2>Posted {{ video.updated_at|date }} by i am vans</h2> {# TODO: update to have a user associated #}
+            {% ooyala_for_object video 555 %}
+            <p>{{ video.description }}</p>
+        </div>
+        <ul class="tags">
+            {% for tag in video.tag_list %}
+            <div class="rounded">{{ tag }}</div>
+        {% endfor %}
+        </ul>
 
-    
-    {% with video as object %}
-        {% include 'rating/blocks/default.html' %}
-    {% endwith %}
-    {% titlebar "latest videos" %}
-    <ul id="latestVideosList">
-        <li>
-            <a href=""></a>
-            <span><a href="">Video title</a></span>
-            <p>Views: 1000<br />Channel: Skate</p>
-        </li>
-        <li>
-            <a href=""></a>
-            <span><a href="">Video title</a></span>
-            <p>Views: 1000<br />Channel: Skate</p>
-        </li>
-        <li class="selected">
-            <a href=""></a>
-            <span><a href="">Video title</a></span>
-            <p>Views: 1000<br />Channel: Skate</p>
-        </li>
-        <li>
-            <a href=""></a>
-            <span><a href="">Video title</a></span>
-            <p>Views: 1000<br />Channel: Skate</p>
-        </li>
-        <li>
-            <a href=""></a>
-            <span><a href="">Video title</a></span>
-            <p>Views: 1000<br />Channel: Skate</p>
-        </li>
-        <li>
-            <a href=""></a>
-            <span><a href="">Video title</a></span>
-            <p>Views: 1000<br />Channel: Skate</p>
-        </li>
-    </ul>
-    {% titlebar "Comments" %}
-    <div class="js-kit-comments" permalink="/{{ video.title }}" uniq="{{ video.title }}"></div>
-    <script src="http://cdn.js-kit.com/scripts/comments.js"></script>
+        
+        {% with video as object %}
+            {% if object %}
+                {% include 'rating/blocks/default.html' %}
+            {% endif %}
+        {% endwith %}
+        {% titlebar "latest videos" %}
+        <ul id="latestVideosList">
+            <li>
+                <a href=""></a>
+                <span><a href="">Video title</a></span>
+                <p>Views: 1000<br />Channel: Skate</p>
+            </li>
+            <li>
+                <a href=""></a>
+                <span><a href="">Video title</a></span>
+                <p>Views: 1000<br />Channel: Skate</p>
+            </li>
+            <li class="selected">
+                <a href=""></a>
+                <span><a href="">Video title</a></span>
+                <p>Views: 1000<br />Channel: Skate</p>
+            </li>
+            <li>
+                <a href=""></a>
+                <span><a href="">Video title</a></span>
+                <p>Views: 1000<br />Channel: Skate</p>
+            </li>
+            <li>
+                <a href=""></a>
+                <span><a href="">Video title</a></span>
+                <p>Views: 1000<br />Channel: Skate</p>
+            </li>
+            <li>
+                <a href=""></a>
+                <span><a href="">Video title</a></span>
+                <p>Views: 1000<br />Channel: Skate</p>
+            </li>
+        </ul>
+        {% titlebar "Comments" %}
+        <div class="js-kit-comments" permalink="/{{ video.title }}" uniq="{{ video.title }}"></div>
+        <script src="http://cdn.js-kit.com/scripts/comments.js"></script>
     {% endwith %}
 {% endblock %}
 
