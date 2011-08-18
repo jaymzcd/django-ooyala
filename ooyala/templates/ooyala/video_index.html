@@ -1,5 +1,5 @@
 {% extends 'layouts/2col.html' %}
-{% load util_tags ooyala_tags %}
+{% load util_tags ooyala_tags i18n %}
 
 {% block javascript %}
     {{ block.super }}
@@ -9,8 +9,8 @@
 {% block css %}
     {{ block.super }}
     <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/video.css">
-
 {% endblock %}
+
 {% block leftspan %}28{% endblock %}
 {% block rightspan %}17{% endblock %}
 
@@ -22,29 +22,28 @@
 
 {% block leftcol-content %}
     {% with page.featured_item as video %}
-        <div class="primaryvideo-summary">
-            <h1>{{ video.title }}</h1>
-            <h2>Posted {{ video.updated_at|date }} by i am vans</h2> {# TODO: update to have a user associated #}
-            {% ooyala_for_object video 555 %}
-            <p>{{ video.description }}</p>
-        </div>
-        <ul class="tags">
-            {% for tag in video.tag_list %}
-            <div class="rounded">{{ tag }}</div>
-        {% endfor %}
-        </ul>
-
+        {% if video %}
+            <div class="primaryvideo-summary">
+                <h1>{{ video.title }}</h1>
+                <h2>{% trans "Posted" %} {{ video.updated_at|date }}{# by i am vans#}</h2> {# TODO: update to have a user associated #}
+                {% ooyala_for_object video 555 %}
+                <p>{{ video.description }}</p>
+            </div>
+            <ul class="tags">
+                {% for tag in video.tag_list %}
+                <div class="rounded">{{ tag }}</div>
+            {% endfor %}
+            </ul>
         
-        {% with video as object %}
-            {% if object %}
+            {% with video as object %}
                 {% include 'rating/blocks/default.html' %}
-            {% endif %}
-        {% endwith %}
+            {% endwith %}
+        {% endif %}
 
-        {% titlebar "latest videos" %}
+        {% titlebar _("latest videos") %}
         {% ooyala_recent_items %}
 
-        {% titlebar "Comments" %}
+        {% titlebar _("Comments") %}
         <div class="js-kit-comments" permalink="/{{ video.title }}" uniq="{{ video.title }}"></div>
         <script src="http://cdn.js-kit.com/scripts/comments.js"></script>
     {% endwith %}
@@ -55,12 +54,12 @@
         <form method="POST" action="{% url video:search %}">
             {% csrf_token %}
             <input type="search" name="search_query" />
-            <input type="submit" value="go" class="button" />
+            <input type="submit" value="{% trans "go" %}" class="button" />
         </form>
     </div>
 
     <div class="channel-list">
-        <h2>Select a video channel:</h2>
+        <h2>{% trans "Select a video channel:" %}</h2>
         <ul class="ooyala-channel-list">
         {% if not video_homepage %}
             {% for channel in page.items.all %}
@@ -74,8 +73,9 @@
         </ul>
     </div>
 
-    {% titlebar "Recently viewed videos" %}
+    {% titlebar _("Recently viewed videos") %}
     {# How to do this? perhaps grep apache logs? Don't really want to store views in a db. maybe Ooyala api? #}
+    {# Could use redis for this? ~tomv #}
     {% ooyala_recent_items %}
 
 {% endblock %}
