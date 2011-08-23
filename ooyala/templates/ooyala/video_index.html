@@ -59,18 +59,29 @@
     </div>
 
     <div class="channel-list">
-        <h2>{% trans "Select a video channel:" %}</h2>
-        <ul class="ooyala-channel-list">
         {% if not video_homepage %}
             {% for channel in page.items.all %}
+                {% if forloop.first %}
+                    <h2>{% trans "Select a video channel:" %}</h2>
+                    <ul class="ooyala-channel-list">
+                {% endif %}
                 <li><a href="{{ channel.get_absolute_url }}" alt="View channel">{{ channel.title }}</a></li>
+                {% if forloop.last %}
+                    </ul>
+                {% endif %}
             {% endfor %}
         {% else %}
             {% for channel in video_homepage.items.all %}
+                {% if forloop.first %}
+                    <h2>{% trans "Select a video channel:" %}</h2>
+                    <ul class="ooyala-channel-list">
+                {% endif %}
                 <li><a href="{{ channel.get_absolute_url }}" alt="View channel">{{ channel.title }}</a></li>
+                {% if forloop.last %}
+                    </ul>
+                {% endif %}
             {% endfor %}
         {% endif %}
-        </ul>
     </div>
 
     {% titlebar _("Recently viewed videos") %}
