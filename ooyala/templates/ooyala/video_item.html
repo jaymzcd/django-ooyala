@@ -1,5 +1,5 @@
 {% extends BASE_TEMPLATE %}
-{% load ooyala_tags %}
+{% load i18n ooyala_tags %}
 
 {% block add_head %}
     {% ooyala_facebook_headers video %}
@@ -7,7 +7,7 @@
 
 {% block content %}
     <h1>{{ video.title }}</h1>
-    <h2>Posted {{ video.updated_at|date }} by <span style="color: #8f0000">i am vans</span></h2>
+    <h2>{% trans "Posted" %} {{ video.updated_at|date }} {#by <span style="color: #8f0000">i am vans</span>#}</h2>
     {% block videodata %}{{ block.super }}{% endblock %}
     {% ooyala_for_object video 630 %}
     {% block videotags %}{{ block.super }}{% endblock %}

@@ -1,3 +1,4 @@
+{% load i18n %}
 {# Just lifted from the video/search_results.html template #}
 <ul id="video-search_results">
 {% for video in items %}
@@ -5,7 +6,7 @@
         <li>
             <img src="{{ video.thumbnail }}" alt="{{ video.title }} preview" class="search_result-thumb" />
             <a href="{{ video.get_absolute_url }}" alt="Watch {{ video.title }}">{{ video.title }}</a><br />
-            Posted {{ video.updated_at|date }}
+            {% trans "Posted" %} {{ video.updated_at|date }}
         </li>
     {% endif %}
 {% endfor %}

@@ -30,7 +30,7 @@ class Command(BaseCommand):
                             e_code = item.getElementsByTagName('embedCode')[0].firstChild.nodeValue
                             channel_item = OoyalaItem.objects.get(embed_code=e_code)
                             channel_list.videos.add(channel_item)
-                            sys.stdout.write('\tAdding "%s" to channel items\n' % channel_item.title)
+                            sys.stdout.write('\tAdding "%s" to channel items\n' % channel_item.title.encode('utf-8'))
                         except OoyalaItem.DoesNotExist:
                             sys.stdout.write('\tCould not find OoyalaItem with embed_code %s for channel %s\n' \
                                 % (e_code, channel))
