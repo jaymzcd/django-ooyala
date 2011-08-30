@@ -1,7 +1,9 @@
 from django.core.management.base import BaseCommand
+from django.utils.encoding import smart_str
 import sys
 
 from ooyala.models import OoyalaItem, OoyalaChannelList
+from ooyala.managers import OChanManager
 from ooyala.library import OoyalaChannel
 
 class Command(BaseCommand):
@@ -10,14 +12,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        channels = OoyalaItem.objects.all().filter(content_type='channel')\
+        channels = OoyalaItem.ochan.all().filter(content_type='channel')\
             .values_list('embed_code', flat=True)
 
         count = 0
         for channel in channels:
 
             try:
-                channel_obj = OoyalaItem.objects.get(embed_code=channel)
+                channel_obj = OoyalaItem.ochan.get(embed_code=channel)
                 [channel_list, created] = OoyalaChannelList.objects.get_or_create(channel=channel_obj)
                 req = OoyalaChannel(embed_code=channel)
                 ooyala_response = req.process()
@@ -28,9 +30,10 @@ class Command(BaseCommand):
                     for item in items:
                         try:
                             e_code = item.getElementsByTagName('embedCode')[0].firstChild.nodeValue
-                            channel_item = OoyalaItem.objects.get(embed_code=e_code)
+                            channel_item = OoyalaItem.ochan.get(embed_code=e_code)
                             channel_list.videos.add(channel_item)
-                            sys.stdout.write('\tAdding "%s" to channel items\n' % channel_item.title.encode('utf-8'))
+                            s = '\tAdding "%s" to channel items\n' % channel_item.title
+                            sys.stdout.write(smart_str(s))                         
                         except OoyalaItem.DoesNotExist:
                             sys.stdout.write('\tCould not find OoyalaItem with embed_code %s for channel %s\n' \
                                 % (e_code, channel))
@@ -44,3 +47,4 @@ class Command(BaseCommand):
                 sys.stdout.write('Could not find channel item in OoyalaItems: %s' % channel)
 
         sys.stdout.write('\nCOMPLETE: All channel lists created- %d in total\n\n' % count)
+

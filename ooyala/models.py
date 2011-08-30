@@ -2,7 +2,11 @@
 from datetime import datetime, timedelta
 from django.utils.safestring import mark_safe
 from django.db import models
-from ooyala.managers import OItemManager
+from ooyala.managers import OItemManager, OChanManager, OSiteManager, VideoManager
+from django.contrib.sites.models import Site
+from django.conf import settings
+
+#from xml.dom import minidom
 
 class OoyalaItem(models.Model):
     """ Holds an ooyala item from a Backlot Query request - essentially
@@ -10,18 +14,13 @@ class OoyalaItem(models.Model):
 
     STATUS_CHOICES = (
         (0, 'Offline'),
-        (5, 'Live'),
-        (-1, 'File Missing'),
-        (-2, 'Uploading'),
-        (-3, 'Processing'),
+        (5, 'Live')
     )
     # Ugh!
     STATUS_LOOKUP = {
         'offline': 0,
+        'uploading': 3,
         'live': 5,
-        'filemissing': -1,
-        'uploading': -2,
-        'processing': -3,
     }
 
     embed_code = models.CharField(max_length=50, unique=True)
@@ -38,14 +37,17 @@ class OoyalaItem(models.Model):
     thumbnail = models.URLField(blank=True, null=True)
     stat = models.CharField(max_length=255, blank=True, null=True)
 
-    tags = models.CharField(max_length=255, blank=True, null=True)
-    tags.help_text = 'Simple tag field, seperate with commas'
+    site = models.ForeignKey(Site, null=True, blank=True)
+    #tags = models.CharField(max_length=255, blank=True, null=True)
+    #tags.help_text = 'Simple tag field, seperate with commas'
 
     def __unicode__(self):
         return '%s (%s [%s])' % (self.title, self.content_type, self.get_status_display())
 
-    objects = models.Manager()
+    objects = OItemManager()
+    all_objects = models.Manager()
     live = OItemManager()
+    ochan = OChanManager()
 
     @models.permalink
     def get_absolute_url(self):
@@ -68,8 +70,22 @@ class OoyalaItem(models.Model):
         """ Creates a new item from an input XML definition """
 
         def get_data(tagname):
+            if tagname == 'metadata':
+                metadata = xml.getElementsByTagName('metadata')
+                for meta in metadata:
+                    for i in meta.getElementsByTagName('metadataItem'):
+                        if i.getAttribute('name') == 'site':
+                            site_id = settings.EUROPE_ID
+                            try:
+                                site = Site.objects.get(domain=i.getAttribute('value'))
+                            except Site.DoesNotExist:
+                                site = Site.objects.get(domain=site_id)
+                            return site
+
             try:
-                return xml.getElementsByTagName(tagname)[0].firstChild.nodeValue
+                if tagname != 'metadata':
+                    tag_field = xml.getElementsByTagName(tagname)[0].firstChild.nodeValue
+                    return tag_field
             except IndexError:
                 if tagname in ['length']:
                     return 0
@@ -79,6 +95,7 @@ class OoyalaItem(models.Model):
         created = False
 
         item_data = {
+
             'embed_code': get_data('embedCode'),
             'title': get_data('title'),
             'status': OoyalaItem.STATUS_LOOKUP[get_data('status')],
@@ -92,6 +109,7 @@ class OoyalaItem(models.Model):
             'thumbnail': get_data('thumbnail'),
             'stat': get_data('stat'),
             'description': '',
+            'site': get_data('metadata'), # actually will be a attribute
         }
 
         try:
@@ -100,7 +118,7 @@ class OoyalaItem(models.Model):
             pass
 
         try:
-            ooyala_item = OoyalaItem.objects.get(embed_code=get_data('embedCode'))
+            ooyala_item = OoyalaItem.all_objects.get(embed_code=get_data('embedCode'))
             ooyala_item.description = item_data['description']
             #TODO: here attributes should update for that item
         except OoyalaItem.DoesNotExist:
@@ -127,18 +145,23 @@ class OoyalaChannelList(models.Model):
     @property
     def latest_video(self):
         try:
-            return videos.all()[0]
+            return videos.all()[0].filter(site_id__in=settings.SITEPOST["SITES_DISPLAY"])
         except IndexError:
             return None
 
     def __unicode__(self):
-        return self.channel.title
+        try:
+            return self.channel.title
+        except:
+            return 'Missing data'
 
     @property
     def total_items(self):
         return self.videos.count()
 
+
 class UrlVideoLink(models.Model):
+    sites = models.ManyToManyField(Site)
     url = models.CharField(unique=True, max_length=255) # unique for now, a path like /news/item/10
     url.help_text = mark_safe("""The url that this video should be connected to '(assuming template supports video). Eg <em>/news/item/</em>, use <strong>/</strong> for home.""")
     url.allow_tags = True
@@ -148,11 +171,30 @@ class UrlVideoLink(models.Model):
     def __unicode__(self):
         return self.url
 
+    objects = VideoManager()
+    all_objects = models.Manager()
+
 class VideoPage(models.Model):
-    url = models.CharField(unique=True, max_length=255)
+    site = models.ForeignKey(Site)
+    url = models.CharField(max_length=255)
     url.help_text = 'The url for this page to load (relative to /video/). Use / for just top level page.'
     items = models.ManyToManyField(OoyalaItem)
     featured_item = models.ForeignKey(OoyalaItem, related_name='featured_item')
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.url
+
+    class Meta:
+        unique_together = ('site', 'url')
+
+    objects = VideoManager()
+    all_objects = models.Manager()
+
+class SiteChannels(models.Model):
+    site = models.ForeignKey(Site)
+    channel = models.ManyToManyField(OoyalaChannelList)
+
+    def __unicode__(self):
+        return self.site.name
+

@@ -28,7 +28,7 @@ def channel(request, object_id):
     just return the channel which has a valid embed code, however, it's (client)
     preferred to return the very latest video only, hence the additional request. """
 
-    video = OoyalaItem.objects.get(pk=object_id)
+    video = OoyalaItem.live.get(pk=object_id)
     
     context = {
         'video_page': video_homepage,

@@ -13,7 +13,7 @@ from ooyala.models import OoyalaItem
 @staff_member_required
 def backlot_query(request):
 
-    req = OoyalaQuery(page_id=500)
+    req = OoyalaQuery(page_id=500, embed_code='lvbjB4MTqIHmHow-qA48_mFHpRnS1ah_', fields=O.OOYALA_FIELDS_METADATA)
 
     ooyala_response = req.process()
     print ooyala_response

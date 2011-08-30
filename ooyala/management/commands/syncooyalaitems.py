@@ -14,7 +14,7 @@ class Command(BaseCommand):
         offset = 1
         retries_left = 5
         while True:
-            req = OoyalaQuery(page_id=offset)
+            req = OoyalaQuery(page_id=offset, fields=O.OOYALA_FIELDS_METADATA)
             ooyala_response = req.process()
 
             if not isinstance(ooyala_response, basestring):

@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.utils.encoding import smart_str
 import sys
 
 from ooyala.models import OoyalaItem
@@ -18,7 +19,8 @@ class Command(BaseCommand):
                 [ooyala_item, created] = OoyalaItem.from_xml(item)
                 if created:
                     count += 1
-                    sys.stdout.write('Added %s (%s)\n' % (str(ooyala_item.title), ooyala_item.content_type))
+                    s = """Added %s (%s)\n""" % (str(ooyala_item.title), ooyala_item.content_type)
+                    sys.stdout.write(smart_str(s))
         else:
             sys.stdout.write('Problem getting the data from ooyala, retrying...\n')
             self.handle(self, *args, **kwargs)
