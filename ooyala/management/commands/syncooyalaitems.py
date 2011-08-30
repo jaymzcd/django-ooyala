@@ -2,6 +2,7 @@
 from django.core.management.base import BaseCommand
 import sys
 
+from ooyala.constants import OoyalaConstants as O
 from ooyala.models import OoyalaItem
 from ooyala.library import OoyalaQuery
 

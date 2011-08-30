@@ -75,11 +75,11 @@ class OoyalaItem(models.Model):
                 for meta in metadata:
                     for i in meta.getElementsByTagName('metadataItem'):
                         if i.getAttribute('name') == 'site':
-                            site_id = settings.EUROPE_ID
+                            site_id = settings.SITE_ID
                             try:
                                 site = Site.objects.get(domain=i.getAttribute('value'))
                             except Site.DoesNotExist:
-                                site = Site.objects.get(domain=site_id)
+                                site = Site.objects.get(pk=site_id)
                             return site
 
             try:
