@@ -114,7 +114,7 @@ class OoyalaItem(models.Model):
         return [ooyala_item, created]
 
     class Meta:
-        ordering = ('title',)
+        ordering = ('-updated_at', 'title',)
 
 class OoyalaChannelList(models.Model):
     """ Holds a collection of OoyalaItems which match a channel to it's associated
