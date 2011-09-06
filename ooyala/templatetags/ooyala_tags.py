@@ -1,4 +1,5 @@
 from django import template
+from django.utils.html import conditional_escape
 from ooyala.models import UrlVideoLink, OoyalaItem, OoyalaChannelList
 from ooyala.library import OoyalaThumbnail
 from ooyala.conf import RENDER_SIZES, NO_THUMB
@@ -23,6 +24,15 @@ def ooyala_for_object(video_object, width=RENDER_SIZES['large'][0], height=RENDE
         return """
            <script src="http://www.ooyala.com/player.js?wmode=transparent&width=%d&height=%d&wmode=transparent&embedCode=%s"></script>
         """ % (width, height, video_object.embed_code)
+    except AttributeError:
+        return ""
+
+@register.simple_tag
+def ooyala_embed_string(video_object):
+    try:
+        return conditional_escape("""
+            <script src="http://player.ooyala.com/player.js?deepLinkEmbedCode=%(embed_code)s&height=354&video_pcode=tla2U6sQuZL84AFsrTpKS94AKTX7&embedCode=%(embed_code)s&width=630"></script>
+        """ % video_object.__dict__)
     except AttributeError:
         return ""
 
