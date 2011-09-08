@@ -27,6 +27,9 @@ class Command(BaseCommand):
                     break
                 for item in items:
                     [ooyala_item, created] = OoyalaItem.from_xml(item)
+                    if not ooyala_item:
+                        sys.stdout.write("Skipping FAULTY ITEM %s\n" % item)
+                        continue
                     try:
                         if created:
                             count += 1
