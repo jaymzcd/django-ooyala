@@ -39,8 +39,8 @@ class OoyalaItem(models.Model):
     stat = models.CharField(max_length=255, blank=True, null=True)
 
     site = models.ForeignKey(Site, null=True, blank=True)
-    #tags = models.CharField(max_length=255, blank=True, null=True)
-    #tags.help_text = 'Simple tag field, seperate with commas'
+    tags = models.CharField(max_length=255, blank=True, null=True)
+    tags.help_text = 'Simple tag field, seperate with commas'
 
     def __unicode__(self):
         return '%s (%s [%s])' % (self.title, self.content_type, self.get_status_display())
