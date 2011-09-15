@@ -54,7 +54,7 @@ class OoyalaItem(models.Model):
     @property
     def tag_list(self):
         if self.tags:
-            return self.tags.split(',')
+            return [tag.strip() for tag in self.tags.split(',')]
         else:
             return None
 
