@@ -32,7 +32,7 @@ def ooyala_embed_string(video_object):
     try:
         return conditional_escape("""
             <script src="http://player.ooyala.com/player.js?deepLinkEmbedCode=%(embed_code)s&height=354&video_pcode=tla2U6sQuZL84AFsrTpKS94AKTX7&embedCode=%(embed_code)s&width=630"></script>
-        """ % video_object.__dict__)
+        """ % video_object.__dict__).strip()
     except AttributeError:
         return ""
 
