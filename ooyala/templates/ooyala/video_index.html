@@ -41,7 +41,11 @@
         {% endif %}
 
         {% titlebar _("latest videos") %}
-        {% ooyala_recent_items %}
+        {% if USE_VIDEOPAGE_FOR_HOME %}
+            {% ooyala_channel_more video_page %}
+        {% else %}
+            {% ooyala_recent_items %}
+        {% endif %}
 
         {% titlebar _("Comments") %}
         <div class="js-kit-comments" permalink="/{{ video.title }}" uniq="{{ video.title }}"></div>

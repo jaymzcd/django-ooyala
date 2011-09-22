@@ -56,12 +56,22 @@ def ooyala_channel_more(video):
     as our current video. Takes the first channel it finds for now.
     If we get a channel as an item then return all its videos. """
 
-    if video.content_type == 'Channel':
+    import logging
+    logging.log(logging.DEBUG, video)
+    if getattr(video, 'content_type', None) == 'Channel':
         try:
             channel = OoyalaChannelList.objects.get(channel=video)
             similiar_list = channel.videos.all()
         except OoyalaChannelList.DoesNotExist:
             similiar_list = None
+    elif getattr(getattr(video, '_meta', None), 'object_name', '')=='VideoPage':
+        try:
+            video = video.items.all()
+            channel = OoyalaChannelList.objects.filter(channel=video)[0]
+            similiar_list = channel.videos.all().exclude(pk=video)[:5]
+        except IndexError:
+            similiar_list = None,
+
     else:
         try:
             channel = OoyalaChannelList.objects.filter(videos=video)[0]

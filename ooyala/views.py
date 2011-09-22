@@ -21,14 +21,17 @@ def home(request):
     page = get_object_or_404(VideoPage, url='/')
     USE_VIDEOPAGE_FOR_HOME = settings.OOYALA['USE_VIDEOPAGE_FOR_HOME']
     if USE_VIDEOPAGE_FOR_HOME:
-        latest_videos = page.items.all()
-        logging.log(logging.DEBUG, page)
+        latest_videos = [video
+                    for item in page.items.all()
+                        for channel in item.channel.all()
+                            for video in channel.videos.all()]
+        latest_videos = OoyalaItem.live.filter(pk__in=[vid.pk for vid in latest_videos])
     else:
         latest_videos = OoyalaItem.live.all().order_by('-updated_at')
-        logging.log(logging.DEBUG, latest_videos.query)
     context = {
         'video_page': page,
         'BASE_TEMPLATE': BASE_TEMPLATE,
+        'USE_VIDEOPAGE_FOR_HOME': USE_VIDEOPAGE_FOR_HOME,
     }
     return list_detail.object_list(request, latest_videos, paginate_by=8,
         template_name='ooyala/video_index.html', extra_context=context)
