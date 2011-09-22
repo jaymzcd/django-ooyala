@@ -59,7 +59,7 @@
     </div>
 
     <div class="channel-list">
-        {% if not video_homepage %}
+        {% if not video_page %}
             {% for channel in page.items.all %}
                 {% if forloop.first %}
                     <h2>{% trans "Select a video channel:" %}</h2>
@@ -71,7 +71,7 @@
                 {% endif %}
             {% endfor %}
         {% else %}
-            {% for channel in video_homepage.items.all %}
+            {% for channel in video_page.items.all %}
                 {% if forloop.first %}
                     <h2>{% trans "Select a video channel:" %}</h2>
                     <ul class="ooyala-channel-list">
