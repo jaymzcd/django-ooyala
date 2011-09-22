@@ -4,7 +4,7 @@ from django.core.exceptions import FieldError
 
 class OItemManager(Manager):
     def get_query_set(self):
-        return super(OItemManager, self).get_query_set().filter(status=5, site=settings.SITE_ID).order_by('-updated_at')
+        return super(OItemManager, self).get_query_set().filter(status=5).order_by('-updated_at')
 
 class OChanManager(Manager):
     def get_query_set(self):
