@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block leftcol-content %}
-    {% with page.featured_item as video %}
+    {% with video_page.featured_item as video %}
         {% if video %}
             <div class="primaryvideo-summary">
                 <h1>{{ video.title }}</h1>
@@ -34,7 +34,7 @@
                 <div class="rounded">{{ tag }}</div>
             {% endfor %}
             </ul>
-        
+
             {% with video as object %}
                 {% include 'rating/blocks/default.html' %}
             {% endwith %}

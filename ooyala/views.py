@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic import list_detail
 from django.http import HttpResponseRedirect
@@ -6,6 +8,8 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from ooyala.models import OoyalaItem, VideoPage
 from ooyala.conf import BASE_TEMPLATE
+
+from django.conf import settings
 
 try:
     video_homepage = VideoPage.objects.get(url='/')
@@ -15,7 +19,13 @@ except VideoPage.DoesNotExist:
 def home(request):
     """ Simple landing page for the most recent video """
     page = get_object_or_404(VideoPage, url='/')
-    latest_videos = OoyalaItem.live.all().order_by('-updated_at')
+    USE_VIDEOPAGE_FOR_HOME = settings.OOYALA['USE_VIDEOPAGE_FOR_HOME']
+    if USE_VIDEOPAGE_FOR_HOME:
+        latest_videos = page.items.all()
+        logging.log(logging.DEBUG, page)
+    else:
+        latest_videos = OoyalaItem.live.all().order_by('-updated_at')
+        logging.log(logging.DEBUG, latest_videos.query)
     context = {
         'video_page': page,
         'BASE_TEMPLATE': BASE_TEMPLATE,
@@ -29,7 +39,7 @@ def channel(request, object_id):
     preferred to return the very latest video only, hence the additional request. """
 
     video = OoyalaItem.live.get(pk=object_id)
-    
+
     context = {
         'video_page': video_homepage,
         'video': video,
@@ -45,7 +55,7 @@ def search(request):
         items = OoyalaItem.live.all().filter(title__icontains=search_query)
         context = {
             'items': items,
-            'BASE_TEMPLATE': BASE_TEMPLATE,            
+            'BASE_TEMPLATE': BASE_TEMPLATE,
         }
         return list_detail.object_list(request, items, \
             template_name='ooyala/search_results.html', \
@@ -55,4 +65,3 @@ def search(request):
             })
     else:
         return HttpResponseRedirect(reverse('video:home'))
-
