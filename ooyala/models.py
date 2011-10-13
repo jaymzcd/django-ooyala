@@ -3,7 +3,7 @@ import sys
 from datetime import datetime, timedelta
 from django.utils.safestring import mark_safe
 from django.db import models
-from ooyala.managers import OItemManager, OChanManager, OSiteManager, VideoManager
+from ooyala.managers import OItemManager, OChanManager, OSiteManager, VideoManager, UrlVideoLinkManager
 from django.contrib.sites.models import Site
 from django.conf import settings
 
@@ -179,7 +179,7 @@ class UrlVideoLink(models.Model):
     def __unicode__(self):
         return self.url
 
-    objects = VideoManager()
+    objects = UrlVideoLinkManager()
     all_objects = models.Manager()
 
 class VideoPage(models.Model):

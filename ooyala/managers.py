@@ -21,3 +21,7 @@ class VideoManager(Manager):
         except FieldError:
             return super(VideoManager, self).get_query_set().filter(sites=settings.SITE_ID).order_by('-updated_at')
 
+
+class UrlVideoLinkManager(Manager):
+    def get_query_set(self):
+        return super(UrlVideoLinkManager, self).get_query_set().filter(sites=settings.SITE_ID)
