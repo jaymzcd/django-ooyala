@@ -169,8 +169,8 @@ class OoyalaChannelList(models.Model):
 
 
 class UrlVideoLink(models.Model):
-    sites = models.ManyToManyField(Site)
-    url = models.CharField(unique=True, max_length=255) # unique for now, a path like /news/item/10
+    sites = models.ManyToManyField(Site, blank=True, null=True)
+    url = models.CharField(max_length=255)
     url.help_text = mark_safe("""The url that this video should be connected to '(assuming template supports video). Eg <em>/news/item/</em>, use <strong>/</strong> for home.""")
     url.allow_tags = True
     item = models.ForeignKey(OoyalaItem)
@@ -183,7 +183,7 @@ class UrlVideoLink(models.Model):
     all_objects = models.Manager()
 
 class VideoPage(models.Model):
-    site = models.ForeignKey(Site)
+    site = models.ForeignKey(Site, blank=True, null=True)
     url = models.CharField(max_length=255)
     url.help_text = 'The url for this page to load (relative to /video/). Use / for just top level page.'
     items = models.ManyToManyField(OoyalaItem)
@@ -200,9 +200,11 @@ class VideoPage(models.Model):
     all_objects = models.Manager()
 
 class SiteChannels(models.Model):
-    site = models.ForeignKey(Site)
+    site = models.ForeignKey(Site, blank=True, null=True)
     channel = models.ManyToManyField(OoyalaChannelList)
+
+    class Meta():
+        verbose_name_plural = 'Site Channels'
 
     def __unicode__(self):
         return self.site.name
-
