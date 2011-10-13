@@ -90,7 +90,7 @@ class SiteSaveAdmin(admin.ModelAdmin):
 
 
 
-class OoyalaItemAdmin(SiteSaveAdmin):
+class OoyalaItemAdmin(admin.ModelAdmin):
     queryset = lambda self, req: OoyalaItem.all_objects.all()
     list_display = ('title', 'status', 'content_type', 'nice_length', 'updated_at',)
     list_filter = ('content_type', 'status')
