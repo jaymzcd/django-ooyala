@@ -24,12 +24,13 @@ class SiteSaveAdmin(admin.ModelAdmin):
         if 'sites' in form.fields or 'site' in form.fields:
             return super(SiteSaveAdmin, self).save_form(request, form, change)
 
-        user_site = request.user.get_profile().primary_site
         obj = form.save(commit=False)
-        if self.has_fk():
-            obj.site = user_site
-        if self.has_m2m():
-            obj.sites = (user_site,)
+        if not change: #only set if this is a new item
+            user_site = request.user.get_profile().primary_site
+            if self.has_fk():
+                obj.site = user_site
+            if self.has_m2m():
+                obj.sites = (user_site,)
         return obj
 
     # This would be needed if we had inlines
