@@ -10,6 +10,7 @@ class OoyalaItem(models.Model):
 
     STATUS_CHOICES = (
         (0, 'Offline'),
+        (1, 'Paused'),
         (5, 'Live'),
         (-1, 'File Missing'),
         (-2, 'Uploading'),
@@ -18,6 +19,7 @@ class OoyalaItem(models.Model):
     # Ugh!
     STATUS_LOOKUP = {
         'offline': 0,
+        'paused': 1,
         'live': 5,
         'filemissing': -1,
         'uploading': -2,
