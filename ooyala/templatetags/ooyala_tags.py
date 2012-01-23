@@ -99,7 +99,7 @@ def ooyala_thubmnail(embed_code, resolution='320x240', indicies="0-25", cache=Tr
             thumbs = OoyalaThumbnail(embed_code=embed_code, resolution=resolution, indicies=indicies).process()
             thumbs_data = thumbs.getElementsByTagName('thumbnail')
             idx = len(thumbs_data)/2
-            thumb = thumbs_data[idx].firstChild.nodeValue
+            thumb = thumbs_data[idx+1].firstChild.nodeValue
 
         if cache:
             video.thumbnail = thumb
