@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.utils.safestring import mark_safe
 from django.db import models
 from ooyala.managers import OItemManager
+from ooyala.fix_thumbs import enlarge_thumbnail
 
 class OoyalaItem(models.Model):
     """ Holds an ooyala item from a Backlot Query request - essentially
@@ -109,6 +110,8 @@ class OoyalaItem(models.Model):
             created = True
             ooyala_item = OoyalaItem(**item_data)
         ooyala_item.save()
+        
+        enlarge_thumbnail(ooyala_item)        
 
         if created:
             print "Created new item %s " % ooyala_item.embed_code
