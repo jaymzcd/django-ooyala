@@ -18,6 +18,10 @@ from ooyala.library import OoyalaThumbnail
 FIXED_THUMB_SYMBOL = '#'
 
 def enlarge_thumbnail(oitem, desired_size='278x175'):
+    """
+    Basic issue: we cache a thumbnail but don't record the size.
+    So a small thumbnail can be cached sometimes.
+    """
     desired_x = int(desired_size.split('x')[0])
 
     small_url = oitem.thumbnail
