@@ -110,7 +110,7 @@ class OoyalaItem(models.Model):
         except OoyalaItem.DoesNotExist:
             created = True
             ooyala_item = OoyalaItem(**item_data)
-	from ooyala.fix_thumbs import enlarge_thumbnail
+        from ooyala.fix_thumbs import enlarge_thumbnail
         ooyala_item.save()
         
         enlarge_thumbnail(ooyala_item)        
