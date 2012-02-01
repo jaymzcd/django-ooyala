@@ -13,6 +13,7 @@ class Command(BaseCommand):
         count = 0
         offset = 1
         retries_left = 5
+        embed_codes_found = set()
         while True:
             req = OoyalaQuery(page_id=offset)
             ooyala_response = req.process()
@@ -31,8 +32,9 @@ class Command(BaseCommand):
                             count += 1
                             sys.stdout.write('Added %s (%s)\n' % (str(ooyala_item.title), ooyala_item.content_type))
                         else:
-                            sys.stdout.write("Skipping %s\n" % str(ooyala_item.title))
+                            sys.stdout.write("Updating %s\n" % str(ooyala_item.title))
                             pass
+                        embed_codes_found.add(ooyala_item.embed_code)
                     except UnicodeEncodeError:
                         sys.stdout.write('Decode error for title\n')
                 if len(items) < VIDEOS_PER_PAGE:
@@ -47,7 +49,10 @@ class Command(BaseCommand):
                 continue # keep same offset
 
             offset += VIDEOS_PER_PAGE
+        
+        # we've now gone through ALL ooyala embed codes... hopefully
+        # so we can delete any ooyalaitems with other (old) emed_codes
+        OoyalaItem.objects.exclude(embed_code__in=embed_codes_found).delete()
 
 
         sys.stdout.write('\nCOMPLETE: All items imported - %s in total\n\n' % count)
-

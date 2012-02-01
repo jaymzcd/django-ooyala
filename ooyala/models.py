@@ -4,6 +4,7 @@ from django.utils.safestring import mark_safe
 from django.db import models
 from ooyala.managers import OItemManager
 
+
 class OoyalaItem(models.Model):
     """ Holds an ooyala item from a Backlot Query request - essentially
     a cached version to save making requests for every client """
@@ -65,18 +66,16 @@ class OoyalaItem(models.Model):
 
     @staticmethod
     def from_xml(xml):
-        """ Creates a new item from an input XML definition """
+        """ Updates an existing item or creates a new item from an input XML definition """
 
         def get_data(tagname):
             try:
                 return xml.getElementsByTagName(tagname)[0].firstChild.nodeValue
             except IndexError:
-                if tagname in ['length']:
+                if tagname == 'length':
                     return 0
                 else:
                     return None
-
-        created = False
 
         item_data = {
             'embed_code': get_data('embedCode'),
@@ -91,21 +90,16 @@ class OoyalaItem(models.Model):
             'height': int(get_data('height')),
             'thumbnail': get_data('thumbnail'),
             'stat': get_data('stat'),
-            'description': '',
+            'description': get_data('description') or '',
         }
 
-        try:
-            item_data.update(dict(description=get_data('description'))) # not everything has
-        except:
-            pass
-
+        created = False
         try:
             ooyala_item = OoyalaItem.objects.get(embed_code=get_data('embedCode'))
-            ooyala_item.description = item_data['description']
-            #TODO: here attributes should update for that item
+            [setattr(ooyala_item, key, val) for key, val in item_data.items()]
         except OoyalaItem.DoesNotExist:
-            created = True
             ooyala_item = OoyalaItem(**item_data)
+            created = True
         ooyala_item.save()
 
         if created:
@@ -115,6 +109,7 @@ class OoyalaItem(models.Model):
 
     class Meta:
         ordering = ('-updated_at', 'title',)
+
 
 class OoyalaChannelList(models.Model):
     """ Holds a collection of OoyalaItems which match a channel to it's associated
@@ -138,6 +133,7 @@ class OoyalaChannelList(models.Model):
     def total_items(self):
         return self.videos.count()
 
+
 class UrlVideoLink(models.Model):
     url = models.CharField(unique=True, max_length=255) # unique for now, a path like /news/item/10
     url.help_text = mark_safe("""The url that this video should be connected to '(assuming template supports video). Eg <em>/news/item/</em>, use <strong>/</strong> for home.""")
@@ -147,6 +143,7 @@ class UrlVideoLink(models.Model):
 
     def __unicode__(self):
         return self.url
+
 
 class VideoPage(models.Model):
     url = models.CharField(unique=True, max_length=255)
