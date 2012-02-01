@@ -52,7 +52,10 @@ class Command(BaseCommand):
         
         # we've now gone through ALL ooyala embed codes... hopefully
         # so we can delete any ooyalaitems with other (old) emed_codes
-        OoyalaItem.objects.exclude(embed_code__in=embed_codes_found).delete()
+        old_items = OoyalaItem.objects.exclude(embed_code__in=embed_codes_found)
+        print
+        print 'Deleting %s items: %s' % (old_items.count(), old_items)
+        old_items.delete()
 
 
         sys.stdout.write('\nCOMPLETE: All items imported - %s in total\n\n' % count)
