@@ -11,18 +11,22 @@ class OoyalaItem(models.Model):
 
     STATUS_CHOICES = (
         (0, 'Offline'),
+        (1, 'Paused'),
         (5, 'Live'),
         (-1, 'File Missing'),
         (-2, 'Uploading'),
         (-3, 'Processing'),
+        (-4, 'Error'),
     )
     # Ugh!
     STATUS_LOOKUP = {
         'offline': 0,
+        'paused': 1,
         'live': 5,
         'filemissing': -1,
         'uploading': -2,
         'processing': -3,
+        'error': -4,
     }
 
     embed_code = models.CharField(max_length=50, unique=True)
@@ -101,6 +105,9 @@ class OoyalaItem(models.Model):
             ooyala_item = OoyalaItem(**item_data)
             created = True
         ooyala_item.save()
+       
+        from ooyala.fix_thumbs import enlarge_thumbnail 
+        enlarge_thumbnail(ooyala_item)        
 
         if created:
             print "Created new item %s " % ooyala_item.embed_code
