@@ -74,7 +74,10 @@ class OoyalaItem(models.Model):
 
         def get_data(tagname):
             try:
-                return xml.getElementsByTagName(tagname)[0].firstChild.nodeValue
+                child = xml.getElementsByTagName(tagname)[0].firstChild
+                if child:
+                    return child.nodeValue
+                return None
             except IndexError:
                 if tagname == 'length':
                     return 0
